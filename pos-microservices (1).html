@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Røst Coffee House POS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Montserrat:wght@500;600;700&family=Unbounded:wght@800&display=swap">
+<style>
+:root{--bg:#ece4da;--sf:#f6f1ea;--tx:#2a1a14;--mu:#7a6558;--ac:#9b2d1b;--ac2:#f0dfd3;--bd:#d6c8ba;--ok:#2b6e2f;--er:#c0201a;--wn:#b9650e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media not all{:root:not([data-theme="light"]){--bg:#14191f;--sf:#1d242d;--tx:#e8edf2;--mu:#92a0ae;--ac:#5bb5d1;--ac2:#1f3340;--bd:#303b47;--ok:#4cc388;--er:#ef6c5e;--wn:#e3a53f}}
+:root[data-theme="dark"]{--bg:#14191f;--sf:#1d242d;--tx:#e8edf2;--mu:#92a0ae;--ac:#5bb5d1;--ac2:#1f3340;--bd:#303b47;--ok:#4cc388;--er:#ef6c5e;--wn:#e3a53f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg) url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .35 0 0 0 0 .28 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");color:var(--tx);font:600 14.5px/1.45 "Montserrat","Segoe UI",system-ui,sans-serif}
+header{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 18px 6px}
+.brand{text-align:center}h1{font:800 clamp(34px,9vw,58px)/1 "Unbounded","Arial Black",sans-serif;letter-spacing:.22em;margin:0 -.22em 6px 0;color:#111}h1 i{font-style:normal;color:#8b1f1a}.sub{font:700 clamp(15px,3.6vw,24px) "Montserrat",Arial,sans-serif;letter-spacing:.14em;color:#8b1f1a}h2,h3.sec{font-family:"Bowlby One","Arial Black",sans-serif;font-weight:400;color:#9b2d1b}h2{font-size:22px;margin:0 0 10px}h3.sec{font-size:26px;margin:18px 0 6px}
+main{max-width:1100px;margin:0 auto;padding:16px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+button,input,select{font:inherit;color:var(--tx)}
+button{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--ac)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+button.on,button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+input,select{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:7px 9px;max-width:100%}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:14px}
+.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:600;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.prod{text-align:left;display:block;width:100%}.prod b{display:block}.prod small{color:var(--mu)}.mrow{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px dotted var(--bd);border-radius:0;padding:7px 4px;font:700 15px "Montserrat",sans-serif}.mrow:hover{background:var(--ac2)}.mrow:disabled{opacity:.4}.mrow small{color:var(--mu);font-weight:500}
+.tot{display:flex;justify-content:space-between;padding:3px 0}.tot.g{font-weight:700;font-size:18px;border-top:1px solid var(--bd);margin-top:6px;padding-top:8px}
+.low{color:var(--wn);font-weight:600}.err{color:var(--er)}.okc{color:var(--ok)}.mu{color:var(--mu)}
+.log{font:12.5px/1.6 ui-monospace,Consolas,monospace}.log div{border-bottom:1px dashed var(--bd);padding:2px 0}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+.chip{background:var(--ac2);border-radius:6px;padding:8px 10px;font-size:13px}.chip b{display:block;font-size:15px}
+.login{max-width:340px;margin:50px auto}.login input{width:100%;margin-bottom:8px}
+dialog{border:1px solid var(--bd);border-radius:8px;background:var(--sf);color:var(--tx);max-width:340px;width:92%}
+pre.rc{font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;margin:0 0 10px}
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#ece4da;opacity:1;transition:opacity .5s}#splash.off{opacity:0;pointer-events:none}#splash h1 i{display:inline-block}#splash.on h1 i{animation:sp .9s ease-in-out infinite alternate}@keyframes sp{from{transform:scale(1)}to{transform:scale(1.2)}}.bar{width:min(240px,60vw);height:6px;background:#d6c8ba;border-radius:3px;overflow:hidden}.bar span{display:block;height:100%;width:0;background:#9b2d1b}#splash.on .bar span{animation:ld var(--d,2s) ease-out forwards}@keyframes ld{to{width:100%}}@media(prefers-reduced-motion:reduce){#splash *{animation:none!important}#splash{transition:none}}
+@media print{body *{visibility:hidden}dialog,dialog *{visibility:visible}dialog{position:absolute;left:0;top:0;border:0}}
+</style></head><body>
+<header><div class="brand"><h1>R<i>Ø</i>ST</h1><div class="sub">COFFEE HOUSE</div></div><div class="row" style="margin:0"><span id="who" class="mu"></span><button id="out" hidden>Log out</button></div></header>
+<div id="splash" class="on"><div class="brand"><h1>R<i>Ø</i>ST</h1><div class="sub">COFFEE HOUSE</div></div><div class="bar"><span></span></div><div class="mu">Loading…</div></div>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const peso=n=>'₱'+Number(n).toFixed(2),TAX=.12;
+// ---- Each service owns its own data store ----
+let DB={auth:{users:[{u:'admin',p:'admin123',role:'admin'},{u:'cashier',p:'cashier123',role:'cashier'}],session:null},
+product:menu(),
+inventory:{},tax:0,low:10,payment:[],receipt:[],report:[],seq:1,shift:{cur:null,hist:[],fwd:0,n:1}};
+function menu(){const M={"Classic Coffee":"Espresso:115,Americano:120,Picolo:135,Capuccino:140,Flat White:140,Latte:155,Caramel Latte:170,Mocha Latte:170,Vanilla Latte:160,Hazlenut Latte:160","Signature Drinks":"Rost Signature Mocha:175,Triple Burnt:175,Signature Spanish Latte:165","Plant Based":"Oat Latte:175,Brown Sugar Oat Latte:185,Dirty Horchata:220,Spanish Oat Latte:180","Matcha":"Matcha Latte:140,Matcha Oat:145,Matcha Strawberry:170,Salty Cream Matcha:160,Earl Grey Matcha Latte:200,Pistachio Cream Matcha:200","Hojicha":"Hojicha Latte:140,Oatjicha:145,Brown Sugar Oatjicha:160,Kinako Oatjicha:165","Non-Coffee":"Putot’s Drink:150,Mango Hibiscus Soda:155,Horchata:160,Honey Peach:150,Pink Kombucha:160,Passion Kombucha:170,Dew Kombucha:165,Milk and Choco:130,Coastline:145,Hibiscus Tea:120","Sandwich":"Chicken Pesto:140,Terriyaki Beef:145,Spicy Kani:145,Barbeque Chicken:130","Rice Meals":"Honey Garlic Chicken:155,Hungarian Sausage:160,Garlic Beef:190,Beef Tapa:175","Pasta":"Bulgogi:160","Snacks":"Potato Fries:135","Donuts":"Cheese Brulee & Milky:65,Donuts Box of 3:175,Donuts Box of 6:329","Cheesecake":"Blueberry Crumble:180,Oreo Crumble:150,Biscoff Crumble:165","Cookies":"Chocolate Chip Cookie:85,Red Velvet Cookie:95,Dark Chocolate Cookie:85","Cinnamon Bread":"Original Cinnamon:120","Waffles":"Chick’n Waffle:165,Waffle:115"};let id=0;const o=[];for(const c in M)M[c].split(",").forEach(x=>{const[n,p]=x.split(":");o.push({id:++id,name:n,cat:c,bc:String(id).padStart(3,"0"),price:+p})});return o}
+const COL={Donuts:'#ee1111',Cheesecake:'#ee1111',Cookies:'#ee1111','Cinnamon Bread':'#ee1111',Waffles:'#ee1111',Matcha:'#1f5c14',Hojicha:'#1f5c14','Non-Coffee':'#6b4a35'},hc=c=>COL[c]||'#9b2d1b',ic=c=>COL[c]==='#ee1111'?'#9b3a24':hc(c);
+let LOG=[];
+try{const s=localStorage.getItem('pos-db2');if(s){const d=JSON.parse(s);d.auth.session=null;DB=d}}catch(e){}
+DB.shift=DB.shift||{cur:null,hist:[],fwd:0,n:1};
+const save=()=>{try{localStorage.setItem('pos-db2',JSON.stringify(DB))}catch(e){}};
+// ---- Microservices ----
+const SV={
+auth:{login:({u,p})=>{const x=DB.auth.users.find(a=>a.u.toLowerCase()===u.toLowerCase()&&a.p===p);if(!x)throw'Invalid username or password.';return DB.auth.session={u:x.u,role:x.role}},
+signup:({u,p,p2,name})=>{u=u.trim();if(!/^[\w.]{3,20}$/.test(u))throw'Username must be 3–20 letters, numbers, dots or underscores.';if(DB.auth.users.some(a=>a.u.toLowerCase()===u.toLowerCase()))throw'That username is taken. Choose another.';if(p.length<6)throw'Password must be at least 6 characters.';if(p!==p2)throw'Passwords do not match.';const x={u,p,name:name.trim(),role:'cashier'};DB.auth.users.push(x);return DB.auth.session={u:x.u,role:x.role}},logout:()=>{DB.auth.session=null}},
+product:{list:({q=''})=>{q=q.toLowerCase();return DB.product.filter(p=>p.name.toLowerCase().includes(q)||p.bc.includes(q)||p.cat.toLowerCase().includes(q))},
+add:({name,cat,bc,price,stock})=>{if(!name||!(price>0))throw'Enter a name and a price above 0.';const id=Math.max(0,...DB.product.map(p=>p.id))+1;DB.product.push({id,name,cat:cat||'General',bc:bc||String(id).padStart(3,'0'),price});if(stock>0)DB.inventory[id]=stock;return id},
+price:({id,price})=>{if(!(price>0))throw'Price must be above 0.';DB.product.find(p=>p.id==id).price=price},
+rename:({id,name})=>{if(!name)throw'Name cannot be empty.';DB.product.find(p=>p.id==id).name=name},
+remove:({id})=>{DB.product=DB.product.filter(p=>p.id!=id);delete DB.inventory[id]}},
+inventory:{stock:()=>DB.inventory,
+check:({items})=>{for(const i of items){const s=DB.inventory[i.id];if(s!=null&&s<i.qty)throw'Not enough stock for '+i.name+'.'}return true},
+deduct:({items})=>{items.forEach(i=>{if(DB.inventory[i.id]!=null)DB.inventory[i.id]-=i.qty});return DB.product.filter(p=>DB.inventory[p.id]!=null&&DB.inventory[p.id]<=DB.low).map(p=>p.name)},
+restock:({id,qty})=>{if(!(qty>0))throw'Quantity must be above 0.';DB.inventory[id]=(DB.inventory[id]||0)+qty},unlimit:({id})=>{delete DB.inventory[id]}},
+payment:{pay:({method,total,tendered,ref})=>{if(method==='cash'&&tendered<total)throw'Cash received is less than the total.';
+if(method!=='cash'&&!/^\w{4,}$/.test(ref||''))throw'Enter the '+(method==='gcash'?'GCash':'bank transfer')+' reference number (4+ letters or digits).';
+const r={id:'PAY-'+String(DB.payment.length+1).padStart(4,'0'),method,total,change:method==='cash'?tendered-total:0,ref:ref||''};DB.payment.push(r);return r}},
+receipt:{generate:(s)=>{const r={no:'RCT-'+String(s.id).padStart(5,'0'),...s};DB.receipt.push(r);return r}},
+report:{record:(s)=>{DB.report.push(s)},
+summary:({period})=>{const n=new Date(),from={daily:new Date(n.getFullYear(),n.getMonth(),n.getDate()),weekly:new Date(n-6048e5),monthly:new Date(n.getFullYear(),n.getMonth(),1),yearly:new Date(n.getFullYear(),0,1)}[period];
+const rows=DB.report.filter(s=>new Date(s.at)>=from),by={};
+rows.forEach(s=>s.items.forEach(i=>{by[i.name]=by[i.name]||{qty:0,rev:0};by[i.name].qty+=i.qty;by[i.name].rev+=i.qty*i.price}));
+const mm={cash:0,gcash:0,bank:0};rows.forEach(s=>{mm[s.pay.method]=(mm[s.pay.method]||0)+s.total});return{count:rows.length,m:mm,revenue:rows.reduce((a,s)=>a+s.total,0),tax:rows.reduce((a,s)=>a+s.tax,0),by:Object.entries(by).sort((a,b)=>b[1].rev-a[1].rev)}}}};
+const sum=a=>a.reduce((t,x)=>t+x.amt,0);
+SV.shift={open:({cash})=>{if(DB.shift.cur)throw'A shift is already open.';if(!(cash>=0))throw'Enter the opening cash (0 or more).';return DB.shift.cur={id:DB.shift.n++,by:DB.auth.session.u,at:new Date().toISOString(),opening:cash,fwd:DB.shift.fwd,exp:[],add:[]}},
+entry:({kind,desc,amt})=>{const c=DB.shift.cur;if(!c)throw'Open a shift first.';if(!desc||!(amt>0))throw'Enter a description and an amount above 0.';c[kind].push({at:new Date().toISOString(),desc,amt})},
+summary:()=>{const c=DB.shift.cur;if(!c)return null;const m={cash:0,gcash:0,bank:0};DB.report.filter(s=>s.shift===c.id).forEach(s=>{m[s.pay.method]=(m[s.pay.method]||0)+s.total});const addT=sum(c.add),expT=sum(c.exp);return{c,m,addT,expT,expected:c.opening+m.cash+addT-expT}},
+close:({counted,fwd})=>{const sm=SV.shift.summary();if(!sm)throw'No open shift to close.';if(!(counted>=0))throw'Enter the cash you counted.';if(!(fwd>=0)||fwd>counted)throw'Cash forward must be between 0 and the cash counted.';const c=sm.c,r={id:c.id,by:c.by,at:c.at,closedAt:new Date().toISOString(),opening:c.opening,m:sm.m,addT:sm.addT,expT:sm.expT,expected:sm.expected,counted,diff:counted-sm.expected,fwdOut:fwd,deposit:counted-fwd};DB.shift.hist.unshift(r);DB.shift.fwd=fwd;DB.shift.cur=null;return r}};
+function call(from,to,ep,data={}){const t=new Date().toLocaleTimeString();try{const r=SV[to][ep](data);LOG.unshift({t,from,to,ep,ok:1});save();return r}catch(e){LOG.unshift({t,from,to,ep,ok:0,e});throw e}}
+// Sales service orchestrates checkout in the order from the report
+function checkout({cart,disc,method,tendered,ref}){
+if(!call('sales','shift','summary'))throw'Open a shift first on the Shift tab.';
+if(dtype&&!did.trim())throw'Enter the '+dtype+' ID number first.';
+const items=cart.map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty}));
+call('sales','inventory','check',{items});
+const sub=items.reduce((a,i)=>a+i.price*i.qty,0),dv=sub*disc/100,tax=dtype?0:(sub-dv)*(DB.tax||0)/100,total=sub-dv+tax;
+const pay=call('sales','payment','pay',{method,total,tendered,ref});
+const low=call('sales','inventory','deduct',{items});
+const sale={id:DB.seq++,at:new Date().toISOString(),cashier:DB.auth.session.u,items,sub,disc:dv,tax,total,pay,dtype,did:did.trim(),shift:DB.shift.cur.id};
+const rc=call('sales','receipt','generate',sale);call('sales','report','record',sale);return{rc,low}}
+// ---- UI ----
+let dtype='',did='',cat='',mode='login',tab='pos',cart=[],q='',disc=0,method='cash',period='daily',msg='';
+const role=()=>DB.auth.session&&DB.auth.session.role;
+const TABS=()=>role()==='admin'?[['pos','Checkout'],['shift','Shift'],['prod','Products'],['inv','Inventory'],['rep','Reports'],['svc','Services']]:[['pos','Checkout'],['shift','Shift'],['inv','Inventory'],['svc','Services']];
+function render(){const s=DB.auth.session;$('#who').textContent=s?s.u+' ('+s.role+')':'';$('#out').hidden=!s;
+if(!s){const su=mode==='signup';$('#app').innerHTML=`<div class="card login"><div class="row"><button class="${su?'':'on'}" id="m1">Log in</button><button class="${su?'on':''}" id="m2">Sign up</button></div>${su?'<input id="nm" placeholder="Full name" autocomplete="name">':''}<input id="u" placeholder="Username" autocomplete="username"><input id="p" type="password" placeholder="Password${su?' (6+ characters)':''}" autocomplete="${su?'new-password':'current-password'}">${su?'<input id="p2" type="password" placeholder="Confirm password" autocomplete="new-password">':''}<button class="pri" id="go" style="width:100%">${su?'Create account':'Log in'}</button><p id="le" class="err"></p><p class="mu">${su?'New accounts are created as cashiers. An admin account is needed for products, inventory and reports.':'Demo accounts: admin / admin123 and cashier / cashier123'}</p></div>`;
+$('#m1').onclick=()=>{mode='login';render()};$('#m2').onclick=()=>{mode='signup';render()};
+$('#go').onclick=()=>{try{su?call('client','auth','signup',{u:$('#u').value,p:$('#p').value,p2:$('#p2').value,name:$('#nm').value}):call('client','auth','login',{u:$('#u').value.trim(),p:$('#p').value});tab='pos';render();splash(1000)}catch(e){$('#le').textContent=e}};$('#app').onkeydown=e=>{if(e.key==='Enter')$('#go').click()};return}
+const nav=`<nav>${TABS().map(t=>`<button class="${tab===t[0]?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('')}</nav>`;
+$('#app').innerHTML=nav+({pos:vPos,shift:vShift,prod:vProd,inv:vInv,rep:vRep,svc:vSvc}[tab])();
+document.querySelectorAll('nav [data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;msg='';render()});bind()}
+const money=(c)=>{const sub=c.reduce((a,x)=>a+x.price*x.qty,0),dv=sub*disc/100,tax=dtype?0:(sub-dv)*(DB.tax||0)/100;return{sub,dv,tax,total:sub-dv+tax}};
+function vPos(){const ps=call('ui','product','list',{q}).filter(p=>!cat||p.cat===cat),st=SV.inventory.stock(),m=money(cart),cats=[...new Set(DB.product.map(p=>p.cat))];
+return`${DB.shift.cur?'':'<p class="err">No shift is open. Open one on the Shift tab before taking payments.</p>'}<div class="grid"><div class="card"><h2>Products</h2><div class="row"><input id="q" placeholder="Search items or barcode" value="${esc(q)}" style="flex:1"></div><div class="row"><button class="${cat?'':'on'}" data-cat="">All</button>${cats.map(c=>`<button class="${cat===c?'on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+<div class="menu">${cats.filter(c=>ps.some(p=>p.cat===c)).map(c=>`<h3 class="sec" style="color:${hc(c)}">${esc(c)}</h3>`+ps.filter(p=>p.cat===c).map(p=>`<button class="mrow" style="color:${ic(c)}" data-add="${p.id}" ${st[p.id]<1?'disabled':''}><span>${esc(p.name)}${st[p.id]!=null?` <small>(${st[p.id]} left)</small>`:''}</span><b>${peso(p.price)}</b></button>`).join('')).join('')||'<p class="mu">No item matches. Try another name.</p>'}</div></div>
+<div class="card"><h2>Current sale</h2>${cart.length?`<div class="tbl"><table>${cart.map((c,i)=>`<tr><td>${esc(c.name)}</td><td><input type="number" min="0" value="${c.price}" data-cp="${i}" style="width:70px" aria-label="Price"></td><td><button data-m="${i}">−</button> ${c.qty} <button data-p="${i}">+</button></td><td>${peso(c.price*c.qty)}</td></tr>`).join('')}</table></div>`:'<p class="mu">Cart is empty. Select a product to add it.</p>'}
+<div class="row" style="margin-top:10px"><input id="cn" placeholder="New item name" style="flex:1;min-width:110px"><input id="cp" type="number" min="0" placeholder="Price" style="width:80px"><input id="cc" placeholder="Category" style="width:100px"><input id="cs" type="number" min="0" placeholder="Stock" style="width:80px"></div><div class="row"><button id="ca">Add to sale</button><button id="cm">Save to menu</button></div><div class="row"><button class="${dtype==='PWD'?'on':''}" data-dt="PWD">PWD 20%</button><button class="${dtype==='Senior'?'on':''}" data-dt="Senior">Senior 20%</button>${dtype?`<input id="did" placeholder="${dtype} ID number" value="${esc(did)}" style="flex:1;min-width:110px">`:''}</div><div class="row"><label>Discount % <input id="disc" type="number" min="0" max="100" value="${disc}" style="width:70px" ${dtype?'disabled':''}></label><label>Tax % <input id="tax" type="number" min="0" max="100" value="${DB.tax||0}" style="width:70px"></label></div>
+<div class="tot"><span>Subtotal</span><span>${peso(m.sub)}</span></div><div class="tot"><span>Discount${dtype?' ('+dtype+')':''}</span><span>−${peso(m.dv)}</span></div><div class="tot"><span>${dtype?'VAT exempt':'Tax ('+(DB.tax||0)+'%)'}</span><span>${peso(m.tax)}</span></div><div class="tot g"><span>Total</span><span>${peso(m.total)}</span></div>
+<div class="row" style="margin-top:10px"><select id="meth"><option value="cash" ${method==='cash'?'selected':''}>Cash</option><option value="gcash" ${method==='gcash'?'selected':''}>GCash</option><option value="bank" ${method==='bank'?'selected':''}>Bank transfer</option></select>
+<input id="tend" placeholder="${method==='cash'?'Cash received':method==='gcash'?'GCash reference no.':'Bank transfer reference no.'}" style="flex:1"></div>${method==='cash'?'<p id="chg" style="margin:0 0 8px;font-weight:600">Change: ₱0.00</p>':''}
+<button class="pri" id="pay" style="width:100%" ${cart.length?'':'disabled'}>Pay and print receipt</button><p class="${msg.startsWith('✓')?'okc':'err'}">${esc(msg)}</p></div></div>`}
+function vProd(){const ps=call('ui','product','list',{}),st=SV.inventory.stock();
+return`<div class="card"><h2>Product Service</h2><div class="row"><input id="n" placeholder="Name"><input id="c" placeholder="Category"><input id="b" placeholder="Barcode"><input id="pr" type="number" placeholder="Price" style="width:90px"><input id="sk" type="number" placeholder="Stock (optional)" style="width:130px"><button class="pri" id="add">Add product</button></div><p class="err">${esc(msg)}</p>
+<div class="tbl"><table><tr><th>Name</th><th>Category</th><th>Barcode</th><th>Price</th><th>Stock</th><th></th></tr>${ps.map(p=>`<tr><td><input value="${esc(p.name)}" data-ne="${p.id}" aria-label="Name"></td><td>${esc(p.cat)}</td><td>${esc(p.bc)}</td><td><input type="number" value="${p.price}" data-pe="${p.id}" style="width:80px"></td><td>${st[p.id]??'∞'}</td><td><button data-rm="${p.id}">Remove</button></td></tr>`).join('')}</table></div></div>`}
+function vInv(){const ps=call('ui','product','list',{}),st=SV.inventory.stock();
+return`<div class="card"><h2>Inventory Service</h2><p class="mu">Menu items are made to order, so stock is not tracked until you add a count. Tracked items at ${DB.low} or fewer are flagged as low stock.</p><p class="err">${esc(msg)}</p><div class="tbl"><table><tr><th>Product</th><th>Stock</th><th>Status</th><th>Add stock</th></tr>${ps.map(p=>`<tr><td>${esc(p.name)}</td><td>${st[p.id]??'Unlimited'}</td><td>${st[p.id]==null?'Not tracked':st[p.id]<=DB.low?'<span class="low">Low stock</span>':'OK'}</td><td><input type="number" min="1" id="rs${p.id}" style="width:70px"> <button data-rs="${p.id}">Add</button>${st[p.id]!=null?` <button data-ul="${p.id}">Stop tracking</button>`:''}</td></tr>`).join('')}</table></div></div>`}
+function vShift(){const S=DB.shift,sm=call('ui','shift','summary'),ent=(a,g)=>a.length?`<div class="tbl"><table>${a.map(x=>`<tr><td>${new Date(x.at).toLocaleTimeString()}</td><td>${esc(x.desc)}</td><td>${g}${peso(x.amt)}</td></tr>`).join('')}</table></div>`:'<p class="mu">None yet.</p>',
+hist=S.hist.length?`<div class="card" style="margin-top:14px"><h2>Past shifts</h2><div class="tbl"><table><tr><th>#</th><th>Cashier</th><th>Closed</th><th>Expected</th><th>Counted</th><th>Over/short</th><th>Cash forward</th><th>Remitted</th></tr>${S.hist.slice(0,10).map(h=>`<tr><td>${h.id}</td><td>${esc(h.by)}</td><td>${new Date(h.closedAt).toLocaleString()}</td><td>${peso(h.expected)}</td><td>${peso(h.counted)}</td><td>${peso(h.diff)}</td><td>${peso(h.fwdOut)}</td><td>${peso(h.deposit)}</td></tr>`).join('')}</table></div></div>`:'',
+note=`<p class="${msg.startsWith('✓')?'okc':'err'}">${esc(msg)}</p>`;
+if(!sm)return`<div class="card"><h2>Open shift</h2><p>Cash forward from the last shift: <b>${peso(S.fwd)}</b></p><div class="row"><input id="oc" type="number" min="0" value="${S.fwd}" aria-label="Opening cash"><button class="pri" id="so">Open shift</button></div>${note}</div>${hist}`;
+const c=sm.c,m=sm.m,chip=(l,v)=>`<div class="chip">${l}<b>${v}</b></div>`;
+return`<div class="card"><h2>Shift ${c.id}: ${esc(c.by)}</h2><p class="mu">Opened ${new Date(c.at).toLocaleString()}</p><div class="chips">${chip('Opening cash',peso(c.opening))}${chip('Cash sales',peso(m.cash))}${chip('GCash sales',peso(m.gcash))}${chip('Bank transfer sales',peso(m.bank))}${chip('Additionals','+'+peso(sm.addT))}${chip('Expenses','−'+peso(sm.expT))}${chip('Expected cash in drawer',peso(sm.expected))}</div><div class="grid"><div><p><b>Expenses</b></p><div class="row"><input id="ed" placeholder="What was it for?" style="flex:1;min-width:110px"><input id="ea" type="number" min="0" placeholder="Amount" style="width:90px"><button id="ex">Add expense</button></div>${ent(c.exp,'−')}</div><div><p><b>Additionals (cash added to the drawer)</b></p><div class="row"><input id="ud" placeholder="What was it for?" style="flex:1;min-width:110px"><input id="ua" type="number" min="0" placeholder="Amount" style="width:90px"><button id="ad">Add additional</button></div>${ent(c.add,'+')}</div></div><p><b>Close shift</b></p><div class="row"><input id="cc" type="number" min="0" placeholder="Cash counted" style="width:130px"><input id="cf" type="number" min="0" placeholder="Cash forward" style="width:130px"><button class="pri" id="sc">Close shift</button></div><p class="mu">Cash forward stays in the drawer for the next shift. The rest is remitted.</p>${note}</div>${hist}`}
+function vRep(){const r=call('ui','report','summary',{period});
+return`<div class="card"><h2>Reporting Service</h2><div class="row">${['daily','weekly','monthly','yearly'].map(p=>`<button class="${period===p?'on':''}" data-per="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}</div>
+<div class="chips"><div class="chip">Transactions<b>${r.count}</b></div><div class="chip">Revenue<b>${peso(r.revenue)}</b></div><div class="chip">Tax collected<b>${peso(r.tax)}</b></div><div class="chip">Cash sales<b>${peso(r.m.cash)}</b></div><div class="chip">GCash sales<b>${peso(r.m.gcash)}</b></div><div class="chip">Bank transfer sales<b>${peso(r.m.bank)}</b></div></div>
+${r.by.length?`<div class="tbl"><table><tr><th>Product</th><th>Units sold</th><th>Revenue</th></tr>${r.by.map(([n,v])=>`<tr><td>${esc(n)}</td><td>${v.qty}</td><td>${peso(v.rev)}</td></tr>`).join('')}</table></div>`:'<p class="mu">No sales in this period yet. Complete a checkout to see results here.</p>'}</div>`}
+function vSvc(){const L=[['Authentication','login, logout, roles'],['Product','catalog, prices, search'],['Sales','totals, discounts, tax'],['Inventory','stock check, deduct, restock'],['Payment','cash, GCash, bank transfer'],['Receipt','generate and store'],['Reporting','periodic summaries'],['Shift','opening, expenses, additionals, closing']];
+return`<div class="grid"><div class="card"><h2>Eight services, one data store each</h2><div class="tbl"><table>${L.map(l=>`<tr><td><b>${l[0]}</b></td><td class="mu">${l[1]}</td></tr>`).join('')}</table></div><p class="mu">Checkout runs in order: stock check → payment → inventory deduct → receipt → report.</p></div>
+<div class="card"><h2>API call log</h2><div class="log">${LOG.slice(0,40).map(l=>`<div>${l.t} ${l.from} → ${l.to}/${l.ep} ${l.ok?'<span class="okc">200</span>':'<span class="err">400 '+esc(l.e)+'</span>'}</div>`).join('')||'<span class="mu">No calls yet.</span>'}</div></div></div>`}
+function bind(){const $$=(s,f)=>document.querySelectorAll(s).forEach(f),on=(s,f)=>{const e=$(s);if(e)e.onclick=f};
+const c=e=>{try{e()}catch(x){msg=x}render()};
+const qi=$('#q');if(qi){qi.oninput=()=>{q=qi.value;render();const n=$('#q');n.focus();n.setSelectionRange(q.length,q.length)};qi.onkeydown=e=>{if(e.key==='Enter'){const r=SV.product.list({q});if(r.length===1)addCart(r[0].id)}}}
+$$('[data-add]',b=>b.onclick=()=>addCart(+b.dataset.add));
+$$('[data-p]',b=>b.onclick=()=>{const i=cart[+b.dataset.p],s=SV.inventory.stock()[i.id];if(s==null||i.qty<s)i.qty++;else msg='No more stock for '+i.name+'.';render()});
+$$('[data-m]',b=>b.onclick=()=>{const i=+b.dataset.m;if(--cart[i].qty<1)cart.splice(i,1);render()});
+const d=$('#disc');if(d)d.onchange=()=>{disc=Math.min(100,Math.max(0,+d.value||0));render()};
+const mt=$('#meth');if(mt)mt.onchange=()=>{method=mt.value;render()};
+on('#pay',()=>{try{const v=$('#tend').value,r=checkout({cart,disc,method,tendered:+v,ref:v});cart=[];disc=0;dtype='';did='';msg='✓ Payment accepted.'+(r.low.length?' Low stock: '+r.low.join(', ')+'.':'');showRc(r.rc)}catch(e){msg=String(e)}render()});
+on('#add',()=>c(()=>{call('ui','product','add',{name:$('#n').value.trim(),cat:$('#c').value.trim(),bc:$('#b').value.trim(),price:+$('#pr').value,stock:+$('#sk').value||0});msg=''}));
+$$('[data-pe]',i=>i.onchange=()=>c(()=>call('ui','product','price',{id:i.dataset.pe,price:+i.value})));
+$$('[data-rm]',b=>b.onclick=()=>c(()=>call('ui','product','remove',{id:b.dataset.rm})));
+$$('[data-rs]',b=>b.onclick=()=>c(()=>call('ui','inventory','restock',{id:b.dataset.rs,qty:+$('#rs'+b.dataset.rs).value})));
+$$('[data-cat]',b=>b.onclick=()=>{cat=b.dataset.cat;render()});
+$$('[data-dt]',b=>b.onclick=()=>{const t=b.dataset.dt;if(dtype===t){dtype='';did='';disc=0}else{dtype=t;disc=20}render()});
+const di=$('#did');if(di)di.oninput=()=>{did=di.value};
+const te=$('#tend');if(te&&method==='cash')te.oninput=()=>{const t=money(cart).total,v=+te.value;$('#chg').textContent=v>=t?'Change: '+peso(v-t):'Short by '+peso(t-v)};
+on('#cm',()=>c(()=>{call('ui','product','add',{name:$('#cn').value.trim(),cat:$('#cc').value.trim(),price:+$('#cp').value,stock:+$('#cs').value||0});msg='✓ Item saved to the menu.'}));
+$$('[data-cp]',i=>i.onchange=()=>{const v=+i.value;if(v>=0)cart[+i.dataset.cp].price=v;render()});
+const tx=$('#tax');if(tx)tx.onchange=()=>{DB.tax=Math.min(100,Math.max(0,+tx.value||0));save();render()};
+on('#ca',()=>{const n=$('#cn').value.trim(),p=+$('#cp').value;if(!n||!(p>0)){msg='Enter a name and a price above 0 for the custom item.';return render()}cart.push({id:'c'+Date.now(),name:n,price:p,bc:'',qty:1});msg='';render()});
+$$('[data-ne]',i=>i.onchange=()=>c(()=>call('ui','product','rename',{id:i.dataset.ne,name:i.value.trim()})));
+$$('[data-ul]',b=>b.onclick=()=>c(()=>call('ui','inventory','unlimit',{id:b.dataset.ul})));
+on('#so',()=>c(()=>{call('ui','shift','open',{cash:+$('#oc').value});msg=''}));
+on('#ex',()=>c(()=>{call('ui','shift','entry',{kind:'exp',desc:$('#ed').value.trim(),amt:+$('#ea').value});msg=''}));
+on('#ad',()=>c(()=>{call('ui','shift','entry',{kind:'add',desc:$('#ud').value.trim(),amt:+$('#ua').value});msg=''}));
+on('#sc',()=>c(()=>{const r=call('ui','shift','close',{counted:+$('#cc').value,fwd:+$('#cf').value});msg='✓ Shift closed. '+(r.diff===0?'The drawer matches.':(r.diff>0?'Over by ':'Short by ')+peso(Math.abs(r.diff))+'.')+' Cash forward: '+peso(r.fwdOut)+'.'}));
+$$('[data-per]',b=>b.onclick=()=>{period=b.dataset.per;render()})}
+function addCart(id){const p=DB.product.find(x=>x.id==id),ex=cart.find(x=>x.id==id);msg='';if(ex){const s=SV.inventory.stock()[id];if(s==null||ex.qty<s)ex.qty++;else msg='No more stock for '+p.name+'.'}else cart.push({id,name:p.name,price:p.price,bc:p.bc,qty:1});render()}
+function showRc(r){const L=r.items.map(i=>`${i.name}\n   ${i.qty} x ${peso(i.price)}  ${peso(i.qty*i.price)}`).join('\n');
+$('#dlg').innerHTML=`${r.pay.method==='cash'?`<div style="text-align:center;margin-bottom:8px"><div class="mu">Change due</div><div style="font-size:32px;font-weight:700">${peso(r.pay.change)}</div></div>`:''}<pre class="rc">${esc(`RØST COFFEE HOUSE\n${r.no}\n${new Date(r.at).toLocaleString()}\nCashier: ${r.cashier}\n--------------------------\n${L}\n--------------------------\nSubtotal ${peso(r.sub)}\nDiscount${r.dtype?' ('+r.dtype+' ID '+r.did+')':''} -${peso(r.disc)}\nTax      ${peso(r.tax)}\nTOTAL    ${peso(r.total)}\nPaid (${{cash:'Cash',gcash:'GCash',bank:'Bank transfer'}[r.pay.method]}) ${r.pay.ref&&r.pay.method!=='cash'?'Ref '+r.pay.ref:''}\nChange   ${peso(r.pay.change)}\n\nThank you!`)}</pre><div class="row"><button class="pri" onclick="window.print()">Print</button><button onclick="$('#dlg').close()">Close</button></div>`;$('#dlg').showModal()}
+function splash(ms){const s=$('#splash');s.style.setProperty('--d',ms+'ms');s.classList.remove('on','off');void s.offsetWidth;s.classList.add('on');clearTimeout(splash.t);splash.t=setTimeout(()=>s.classList.add('off'),ms)}
+$('#out').onclick=()=>{call('client','auth','logout');cart=[];render();splash(800)};
+splash(2200);
+render();
+</script></body></html>
